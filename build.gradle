@@ -1,0 +1,57 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+repositories {
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+// Bundled third-party libs (jcodec, jaad, json) merged into the mod jar
+def bundledLibsDir = layout.buildDirectory.dir('bundled-libs-classes')
+tasks.register('unpackBundledLibs', Copy) {
+    from zipTree('libs/phantom-bundled-libs.jar')
+    into bundledLibsDir
+}
+sourceSets.main.output.dir(bundledLibsDir, builtBy: 'unpackBundledLibs')
+implementation files("libs/phantom-bundled-libs.jar")
+
+// NanoVG rendering (not shipped by vanilla)
+implementation "org.lwjgl:lwjgl-nanovg:3.3.3"
+runtimeOnly "org.lwjgl:lwjgl-nanovg:3.3.3:natives-windows"
+include "org.lwjgl:lwjgl-nanovg:3.3.3"
+include "org.lwjgl:lwjgl-nanovg:3.3.3:natives-windows"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}

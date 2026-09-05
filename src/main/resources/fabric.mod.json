@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "phantomclient",
+  "version": "1.0",
+  "name": "Phantom Client",
+  "authors": ["me"],
+  "entrypoints": {
+    "client": ["me.phantom.core.PhantomModInitializer"]
+  },
+  "mixins": ["phantom.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.5"
+  }
+}
