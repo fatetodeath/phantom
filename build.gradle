@@ -1,0 +1,76 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/phantom.accesswidener")
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "Fabric"
+        url = "https://maven.fabricmc.net/"
+    }
+}
+
+dependencies {
+    // Minecraft 26.1 is unobfuscated, so NO mappings dependency is needed.
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+
+    // Fabric Loader
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    // Bundled third-party libraries
+    // (jcodec, jaad, json) merged into the mod jar
+    def bundledLibsDir = layout.buildDirectory.dir("bundled-libs-classes")
+
+    tasks.register("unpackBundledLibs", Copy) {
+        from zipTree("libs/phantom-bundled-libs.jar")
+        into bundledLibsDir
+    }
+
+    sourceSets.main.output.dir(
+            bundledLibsDir,
+            builtBy: "unpackBundledLibs"
+    )
+
+    implementation files("libs/phantom-bundled-libs.jar")
+
+    // NanoVG rendering - must bundle since MC doesn't expose nanovg to mod classloaders
+    implementation "org.lwjgl:lwjgl-nanovg:3.4.1"
+    runtimeOnly "org.lwjgl:lwjgl-nanovg:3.4.1:natives-windows"
+
+    include "org.lwjgl:lwjgl-nanovg:3.4.1"
+    include "org.lwjgl:lwjgl-nanovg:3.4.1:natives-windows"
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}

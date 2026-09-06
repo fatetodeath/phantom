@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "phantomclient",
+  "version": "1.0",
+  "name": "Phantom Client",
+  "authors": ["me"],
+  "entrypoints": {
+    "client": ["me.phantom.core.PhantomModInitializer"]
+  },
+  "mixins": ["phantom.mixins.json"],
+  "accessWidener": "phantom.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "minecraft": ">=26.1"
+  }
+}

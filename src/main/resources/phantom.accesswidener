@@ -1,0 +1,12 @@
+accessWidener v2 official
+
+# GlTexture constructor (wraps raw GL texture ID)
+accessible method com/mojang/blaze3d/opengl/GlTexture <init> (ILjava/lang/String;Lcom/mojang/blaze3d/textures/TextureFormat;IIIII)V
+
+# GlTextureView constructor
+accessible method com/mojang/blaze3d/opengl/GlTextureView <init> (Lcom/mojang/blaze3d/opengl/GlTexture;II)V
+
+# AbstractTexture fields
+accessible field net/minecraft/client/renderer/texture/AbstractTexture texture Lcom/mojang/blaze3d/textures/GpuTexture;
+accessible field net/minecraft/client/renderer/texture/AbstractTexture textureView Lcom/mojang/blaze3d/textures/GpuTextureView;
+accessible field net/minecraft/client/renderer/texture/AbstractTexture sampler Lcom/mojang/blaze3d/textures/GpuSampler;
